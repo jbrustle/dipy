@@ -1628,7 +1628,7 @@ def design_matrix(gtab, dtype=None):
     -------
     design_matrix : array (g,7)
         Design matrix or B matrix assuming Gaussian distributed tensor model
-        design_matrix[j, :] = (Bxx, Byy, Bzz, Bxy, Bxz, Byz, dummy)
+        [j, :] = (Bxx, Byy, Bzz, Bxy, Bxz, Byz, dummy)
     """
     B = np.zeros((gtab.gradients.shape[0], 7))
     B[:, 0] = gtab.bvecs[:, 0] * gtab.bvecs[:, 0] * 1. * gtab.bvals   # Bxx
@@ -1670,6 +1670,6 @@ common_fit_methods = {'WLS': wls_fit_tensor,
                       'OLS': ols_fit_tensor,
                       'NLLS': nlls_fit_tensor,
                       'RT': restore_fit_tensor,
-                      'restore':restore_fit_tensor,
+                      'restore':restore_tensor,
                       'RESTORE':restore_fit_tensor
                      }

@@ -88,8 +88,8 @@ for modulename, other_sources in (
     pyx_src = pjoin(*modulename.split('.')) + '.pyx'
     EXTS.append(Extension(modulename,[pyx_src] + other_sources,
                           include_dirs = [np.get_include(), "src"],
-                          extra_compile_args = ['-fopenmp'],
-                          extra_link_args = ['-fopenmp']))
+                          extra_compile_args = [''],#['-fopenmp'],
+                          extra_link_args = ['']))#['-fopenmp']))
 
 
 # Do our own build and install time dependency checking. setup.py gets called in
