@@ -37,14 +37,6 @@ def WatsonSHStickTortIsoV_BO(x, grad_dirs, G, delta, smalldel, fibredir, roots):
     distribution.  It must be in Cartesian coordinates [x y z]' with size [3 1].
 
     """
-    """
-    x(1) is the volume fraction of the intracellular space.
-    x(2) is the free diffusivity of the material inside and outside the cylinders.
-    x(3) is the radius of the cylinders.
-    x(4) is the concentration parameter of the Watson's distribution.
-    x(5) is the volume fraction of the isotropic compartment.
-    x(6) is the diffusivity of the isotropic compartment.
-    """
     xcyl=[x[0], x[1], 0, x[2], x[3], x[4]]
 
     Enorm = MeasWatsonSHCylSingleRadTortIsoV_GPD(xcyl, grad_dirs, G, delta, smalldel, fibredir, roots)
@@ -308,11 +300,11 @@ def test_WatsonSHStickTortIsoV_BO():
     0.029694619030192,
     0.029694619030192,
     0.029694619030192]
-    smalldel=np.array(smalldel)
-    delta=smalldel
+    smalldel = np.array(smalldel)
+    delta = smalldel
     roots = 0
-    fibredir =  [[-0.214994778410205], [0.765937075390002], [-0.605902336849230]]
-    x =     [0.008986370184599, 0.000000000017000, 0.008508710965541, 0.000004877258795, 0.000000000030000, 8.193333333333335]
+    fibredir = [[-0.214994778410205], [0.765937075390002], [-0.605902336849230]]
+    x = [0.008986370184599, 0.000000000017000, 0.008508710965541, 0.000004877258795, 0.000000000030000, 8.193333333333335]
     #x = [0.006733692951986,   0.000000000017000,   0.066446333410051,   0.000001258482142,   0.000000000030000,   8.193333333333335]
     #x = [0.292772616103,   0.000000001700,   0.556821335991,   0.176215439118,   0.000000003000,   2652.666666666667]
     #x = [0.9999595735701,   0.0000000017000,   1.0000000000000,   0.6294397716181,   0.0000000030000,   454.8888888888889]
@@ -328,5 +320,4 @@ def test_WatsonSHStickTortIsoV_BO():
 
     return test
 
-print test_WatsonSHStickTortIsoV_BO()
 
