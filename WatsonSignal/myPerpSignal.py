@@ -72,7 +72,6 @@ def PerpSignal(d, R, G, delta, smalldel, roots):
 
 	LE = -2*(GAMMA**2)*GmxSq*s.T
 	
-	print LE
 	return LE
 
 def test():	
@@ -94,7 +93,6 @@ def test():
 	error[5] = (C[5]+0.1758) 
 	error= np.absolute(error)
 
-	print error.sum()
 
 	# check if function works correctly
 	if (error.sum() > 0.00015):

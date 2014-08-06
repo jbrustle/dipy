@@ -92,6 +92,5 @@ def test_WatsonSHCoefficients():
 
     return test
 
-test_WatsonSHCoefficients()
 
     

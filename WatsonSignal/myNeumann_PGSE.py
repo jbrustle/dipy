@@ -21,7 +21,7 @@ def Neumann_PGSE(x, grad_dirs, G, delta, smalldel, fibredir, roots):
     l_q = l_q[0]
 
     LePar = ParSignal(d, G, delta, smalldel)
-    LePar=LePar.reshape(81,1)
+    LePar=LePar.reshape(G.shape[0],1)
     
     Gshape=G.shape
     Gshape_firstcol=Gshape[0]
