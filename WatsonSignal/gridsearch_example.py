@@ -4,13 +4,16 @@ import numpy as np
 
 from noddi_model import noddi
 
+from scipy.optimize import fmin_powell
+
 param = {}
 
 gradients = np.genfromtxt('../dipy/data/gtab_isbi2013_2shell.txt', delimiter = ',')
 
 bvals = np.linalg.norm(gradients, axis = 1)
-
+bvals[0] = 1
 bvecs = gradients / bvals[:,None]
+bvals[0] = 0
 bvecs[0] = [0,0,0]
 param['grad_dirs'] = bvecs
 
@@ -37,8 +40,8 @@ param['b0'] = 1
 
 
 var = [0.35, 0.5, 0.25, 0.25 * np.pi, 0.25 * np.pi]
-
-GT_S = noddi(var, param)
+var = [0.25, 0.35, 0.75, 0.27 * np.pi, 0.23 * np.pi]
+GT_S = noddi(var, **param)
 
 
 opt = {}
@@ -46,8 +49,13 @@ opt['GT_S'] = GT_S
 
 
 def cost_func(var, param, opt):
-	model = noddi(var, param)
+	model = noddi(var, **param)
 	return np.linalg.norm(GT_S - model, 2)**2
+
+def cost_func_floor(var, param, opt):
+	if var[1] < 0:
+		var[1] = 0.01
+	return cost_func(var, param, opt)
 
 
 
@@ -72,6 +80,7 @@ def gridsearch(func, param, opt):
 	var_min = [0,0,0,0,0]
 	for i0 in range(var_step[0]):
 		for i1 in range(var_step[1]):
+			print i1
 			for i2 in range(var_step[2]):
 				for i3 in range(var_step[3]):
 					for i4 in range(var_step[4]):
@@ -93,5 +102,44 @@ def gridsearch(func, param, opt):
 							var_min = var
 							cost_min = cost
 	return (var_min, cost_min)
-var = [0.35, 0.5, 0.25, 0.25 * np.pi, 0.25 * np.pi]
-print cost_func(var, param, opt)
+
+
+
+"""
+# def G_from_q(q, smalldel):
+# 	gyro = 267.513
+# 	return (2*np.pi*q)/(smalldel*gyro)
+
+# def q_from_b(b, smalldel, bigdel):
+# 	return  (b/(bigdel - (1/3.)*smalldel))**(0.5) / (2*np.pi)
+
+# def G_from_b(b, smalldel, bigdel):
+# 	return G_from_q(q_from_b(b, smalldel, bigdel), smalldel)
+
+
+
+
+
+# def q_from_G(G, smalldel):
+# 	gyro = 267.513
+# 	return gyro*G*smalldel/(2*np.pi)
+
+# def b_from_q(q, smalldel, bigdel):
+# 	return (2*np.pi*q)**2 * (bigdel - (1/3.)*smalldel)
+
+
+# def b_from_G(G, smalldel, bigdel):
+# 	return b_from_q(q_from_G(G, smalldel), smalldel, bigdel)
+"""
+
+x0 = (gridsearch(cost_func, param, opt))[0]
+x0 = np.array(x0)
+x_optim = fmin_powell(cost_func_floor, x0, args=(param,opt), xtol=0.0001, ftol=0.0001, maxiter=100, maxfun=None, full_output=0, disp=1, retall=0, callback=None, direc=None)
+x_optim_cost = cost_func(x_optim, param, opt)
+print "var: ", var
+print "x0: ", x0 
+print "x_optim: ", x_optim
+print "x_optim_cost: ", x_optim_cost
+
+
+
