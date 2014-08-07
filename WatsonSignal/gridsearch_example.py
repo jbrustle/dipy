@@ -6,51 +6,54 @@ from noddi_model import noddi
 
 from scipy.optimize import fmin_powell
 
-param = {}
+def example():
+	param = {}
 
-gradients = np.genfromtxt('../dipy/data/gtab_isbi2013_2shell.txt', delimiter = ',')
+	gradients = np.genfromtxt('../dipy/data/gtab_isbi2013_2shell.txt', delimiter = ',')
 
-bvals = np.linalg.norm(gradients, axis = 1)
-bvals[0] = 1
-bvecs = gradients / bvals[:,None]
-bvals[0] = 0
-bvecs[0] = [0,0,0]
-param['grad_dirs'] = bvecs
-
-
-smalldel = 0.03199439 * np.ones_like(bvals)
-smalldel[np.where(bvals<1)] =  0.0
-delta = smalldel
-param['smalldel'] = smalldel
-param['delta'] = delta
-
-G = np.ones_like(bvals)
-G[np.where(bvals<1)] =  0.0
-G[np.where((bvals>1400)&(bvals<1600))] =  0.03098386671263059
-G[np.where((bvals>2400)&(bvals<2600))] =  0.04
-param['G'] = G
-
-roots = 0
-param['roots'] = roots
-
-param['d_iso'] = 0.000000003000
-param['d_par'] = 0.000000001700
-
-param['b0'] = 1
+	bvals = np.linalg.norm(gradients, axis = 1)
+	bvals[0] = 1
+	bvecs = gradients / bvals[:,None]
+	bvals[0] = 0
+	bvecs[0] = [0,0,0]
+	param['grad_dirs'] = bvecs
 
 
-var = [0.35, 0.5, 0.25, 0.25 * np.pi, 0.25 * np.pi]
-var = [0.25, 0.35, 0.75, 0.27 * np.pi, 0.23 * np.pi]
-GT_S = noddi(var, **param)
+	smalldel = 0.03199439 * np.ones_like(bvals)
+	smalldel[np.where(bvals<1)] =  0.0
+	delta = smalldel
+	param['smalldel'] = smalldel
+	param['delta'] = delta
+
+	G = np.ones_like(bvals)
+	G[np.where(bvals<1)] =  0.0
+	G[np.where((bvals>1400)&(bvals<1600))] =  0.03098386671263059
+	G[np.where((bvals>2400)&(bvals<2600))] =  0.04
+	param['G'] = G
+
+	roots = 0
+	param['roots'] = roots
+
+	param['d_iso'] = 0.000000003000
+	param['d_par'] = 0.000000001700
+
+	param['b0'] = 1
 
 
-opt = {}
-opt['GT_S'] = GT_S
+	var = [0.35, 0.5, 0.25, 0.25 * np.pi, 0.25 * np.pi]
+	var = [0.25, 0.35, 0.75, 0.27 * np.pi, 0.23 * np.pi]
+	GT_S = noddi(var, **param)
+
+
+	opt = {}
+	opt['GT_S'] = GT_S
+
+	return (var, param, opt)
 
 
 def cost_func(var, param, opt):
 	model = noddi(var, **param)
-	return np.linalg.norm(GT_S - model, 2)**2
+	return np.linalg.norm(opt['GT_S'] - model, 2)**2
 
 def cost_func_floor(var, param, opt):
 	if var[1] < 0:
@@ -132,6 +135,11 @@ def gridsearch(func, param, opt):
 # 	return b_from_q(q_from_G(G, smalldel), smalldel, bigdel)
 """
 
+"""
+ex = example()
+var = ex[0]
+param = ex[1] 
+opt = ex[2]
 x0 = (gridsearch(cost_func, param, opt))[0]
 x0 = np.array(x0)
 x_optim = fmin_powell(cost_func_floor, x0, args=(param,opt), xtol=0.0001, ftol=0.0001, maxiter=100, maxfun=None, full_output=0, disp=1, retall=0, callback=None, direc=None)
@@ -141,5 +149,5 @@ print "x0: ", x0
 print "x_optim: ", x_optim
 print "x_optim_cost: ", x_optim_cost
 
-
+"""
 
