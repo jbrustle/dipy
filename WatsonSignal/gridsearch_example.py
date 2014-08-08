@@ -58,6 +58,15 @@ def cost_func(var, param, opt):
 def cost_func_floor(var, param, opt):
 	if var[1] < 0:
 		var[1] = 0.01
+	if var[0] > 1:
+		var[0] = 0.99
+	if var[0] < 0:
+		var[0] = 0.01
+	if var[2] > 1:
+		var[2] = 0.99
+	if var[2] < 0:
+		var[2] = 0.01
+
 	return cost_func(var, param, opt)
 
 
